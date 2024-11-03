@@ -141,6 +141,7 @@ The Authentication Service is a microservice that handles user authentication an
 
 </details>
 
+<details>
 <summary>5. Get User Info</summary>
 
 - **Endpoint:** `/api/v1/user`
