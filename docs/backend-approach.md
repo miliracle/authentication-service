@@ -177,3 +177,25 @@ Figure 1: Database Design
 ![High Level Design](high-level-architech.png)
 
 Figure 2: High Level Design
+
+## Detailed Design
+
+### Serverless Service
+
+All of the below services will be deployed as serverless functions to improve scalability and reduce costs.
+
+#### Auth Service
+
+The Auth Service will handle the authentication logic, including sign up, sign in, and sign out.
+
+#### Frontend Service
+
+The Frontend Service will handle the frontend rendering service.
+
+#### Sync Service
+
+The Sync Service will handle the synchronization logic with 3rd party service (e.g. Salesforce).
+
+### Message Queue
+
+// TODO
