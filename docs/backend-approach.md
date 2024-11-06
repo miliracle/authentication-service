@@ -198,4 +198,19 @@ The Sync Service will handle the synchronization logic with 3rd party service (e
 
 ### Message Queue
 
-// TODO
+We have chosen RabbitMQ as our message queue due to its straightforward design, cost-effectiveness, and ease of setup.
+
+[When to Use Kafka or RabbitMQ](https://www.youtube.com/watch?v=w8xWTIFU4C8)
+
+### Database
+
+We have chosen a Document database for our application due to its flexibility and rapid development capabilities. Document databases allow us to store data in a semi-structured format, which is ideal for handling the dynamic and evolving data models of our application. This choice enables us to iterate quickly and adapt to changing requirements without the need for complex schema migrations.
+
+Some of the key benefits of using a Document database include:
+
+- **Schema Flexibility:** Easily accommodate changes to data models without downtime or complex migrations.
+- **Scalability:** Handle large volumes of data and high traffic with ease.
+- **Performance:** Efficiently query and index data for fast read and write operations.
+- **Developer Productivity:** Simplify development with a more natural data representation and powerful querying capabilities.
+
+We will be using MongoDB as our Document database due to its robust feature set, strong community support, and proven track record in production environments.
