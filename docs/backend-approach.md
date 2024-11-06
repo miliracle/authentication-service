@@ -37,6 +37,11 @@ The Authentication Service is a microservice that handles user authentication an
 ### Estimation
 
 1. Storage
+   - Database Storage: Assuming 50KB per user and 10000 users, the estimated storage required is:
+      10000 users x 50KB per user / 1024 / 1024 ~= 500MB
+
+   - Message Queue Memory: Assuming each event is 1KB and each user generates an event upon sign-in, and the handle speed of the sync function is 5 seconds per request, the estimated memory required for RabbitMQ to store the events is:
+      1000 QPS x 1KB per event x 5 seconds / 1024 / 1024 ~= 4.88MB
 
 2. Bandwidth
    - 10000 visits per day * 300 bytes per visit / 1024 / 1024 ~= 30GB per day
