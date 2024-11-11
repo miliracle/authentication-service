@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: 'rabbitmq'
+    ports:
+      - 5673:5672
+      - 15673:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - app-network
+
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: ./docker/Dockerfile.dev
+      args:
+        AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+    ports:
+      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+    volumes:
+      - ./services/auth-service:/home/node/app
+    depends_on:
+      - rabbitmq
+    networks:
+      - app-network
+
+  # sync-service:
+  #   build:
+  #     context: ./services/sync-service
+  #     dockerfile: ./docker/Dockerfile.dev
+  #     args:
+  #       RABBITMQ_HOST: ${RABBITMQ_HOST}
+  #   volumes:
+  #     - ./services/sync-service:/app
+  #   environment:
+  #     NODE_ENV: ${NODE_ENV}
+  #     MESSAGE_QUEUE: amqp://rabbitmq
+  #   networks:
+  #     - app-network
+  #   links:
+  #     - app-rabbitmq
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,24 @@
+FROM node:18
+
+RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
+
+WORKDIR /home/node/app
+
+ARG AUTH_SERVICE_PORT
+ARG RABBITMQ_HOST
+
+COPY --chown=node:node package*.json ./
+
+USER node
+
+RUN npm install
+
+COPY --chown=node:node . .
+
+ENV AUTH_SERVICE_PORT=${AUTH_SERVICE_PORT}
+ENV RABBITMQ_HOST=${RABBITMQ_HOST}
+
+EXPOSE ${AUTH_SERVICE_PORT}
+
+
+CMD ["npm", "run", "dev"]

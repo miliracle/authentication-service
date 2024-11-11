@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile.prod
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      RABBITMQ_HOST: rabbitmq
+
+  subscriber-service:
+    build:
+      context: ./services/subscriber-service
+      dockerfile: Dockerfile.prod
+    environment:
+      NODE_ENV: production
+      RABBITMQ_HOST: rabbitmq
