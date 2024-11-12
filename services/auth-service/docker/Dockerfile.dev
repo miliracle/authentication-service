@@ -1,19 +1,23 @@
+# Use the official Node.js image with Alpine Linux
 FROM node:18-alpine
 
+# Create application directory and set permissions
 RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
 
+# Set the working directory
 WORKDIR /home/node/app
 
-ARG RABBITMQ_HOST
-
-ENV RABBITMQ_HOST=${RABBITMQ_HOST}
-
+# Copy package.json and package-lock.json files and set ownership
 COPY --chown=node:node package*.json ./
 
+# Switch to the node user
 USER node
 
+# Install dependencies
 RUN npm install
 
+# Copy the rest of the application code and set ownership
 COPY --chown=node:node . .
 
+# Command to run the application in development mode
 CMD ["npm", "run", "dev"]

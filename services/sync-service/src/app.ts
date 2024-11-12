@@ -1,9 +1,8 @@
 import amqplib from 'amqplib';
-const amqpUrl = 'amqp://guest:guest@rabbitmq:5672';
+const amqpUrl = process.env.RABBITMQ_HOST;
 
 async function processMessage(msg) {
-  console.log(msg.content.toString(), 'Call email API here');
-  //call your email service here to send the email
+  console.log(msg.content.toString(), 'Call email API hereee');
 }
 
 (async () => {

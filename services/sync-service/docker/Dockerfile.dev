@@ -1,23 +1,32 @@
+# Use the official Node.js image with Alpine Linux
 FROM node:18-alpine
 
+# Install bash
 RUN apk add --no-cache bash
+
+# Download wait-for-it script to wait for dependent services
 RUN wget -O /bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+
+# Make the wait-for-it script executable
 RUN chmod +x /bin/wait-for-it.sh
 
+# Create application directory and set permissions
 RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
 
+# Set the working directory
 WORKDIR /home/node/app
 
-ARG RABBITMQ_HOST
-
-ENV RABBITMQ_HOST=${RABBITMQ_HOST}
-
+# Copy package.json and package-lock.json files and set ownership
 COPY --chown=node:node package*.json ./
 
+# Switch to the node user
 USER node
 
+# Install dependencies
 RUN npm install
 
+# Copy the rest of the application code and set ownership
 COPY --chown=node:node . .
 
+# Command to run the application in development mode
 CMD ["npm", "run", "dev"]

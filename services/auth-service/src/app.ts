@@ -2,7 +2,8 @@ import express from 'express';
 import amqplib from 'amqplib';
 
 // Define the AMQP URL for connecting to RabbitMQ
-const amqpUrl = 'amqp://guest:guest@rabbitmq:5672';
+const amqpUrl = process.env.RABBITMQ_HOST;
+;
 
 // Create an Express application
 const app = express();
