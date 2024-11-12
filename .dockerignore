@@ -1,4 +1,9 @@
    # Node modules
+   services/*/node_modules
+   services/*/node_modules/**/*
+   services/*/dist
+   services/*/dist/**/*
+
    node_modules
 
    # Logs

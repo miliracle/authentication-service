@@ -1,22 +1,32 @@
-import amqp from 'amqplib/callback_api';
+import amqplib from 'amqplib';
+const amqpUrl = 'amqp://guest:guest@rabbitmq:5672';
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+async function processMessage(msg) {
+  console.log(msg.content.toString(), 'Call email API here');
+  //call your email service here to send the email
+}
 
-const connection = await amqp.connect(process.env.MESSAGE_QUEUE);
+(async () => {
+    const connection = await amqplib.connect(amqpUrl, "heartbeat=60");
+    const channel = await connection.createChannel();
+    channel.prefetch(10);
+    const queue = 'task_queue';
+    process.once('SIGINT', async () => { 
+      console.log('got sigint, closing connection');
+      await channel.close();
+      await connection.close(); 
+      process.exit(0);
+    });
 
-const channel = await connection.createChannel();
-await channel.assertQueue('tasks', { durable: true });
-await channel.prefetch(1);
-
-console.info('Waiting tasks...');
-
-channel.consume('tasks', async (message) => {
-await delay(1000);
-
-const content = message.content.toString();
-const task = JSON.parse(content);
-
-channel.ack(message);
-
-console.info(`${task.message} received!`);
-});
+    await channel.assertQueue(queue, {durable: true});
+    await channel.consume(queue, async (msg) => {
+      console.log('processing messages');      
+      await processMessage(msg);
+      await channel.ack(msg);
+    }, 
+    {
+      noAck: false,
+      consumerTag: 'email_consumer'
+    });
+    console.log(" [*] Waiting for messages. To exit press CTRL+C");
+})();

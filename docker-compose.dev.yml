@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   rabbitmq:
-    image: rabbitmq:4-management
+    image: rabbitmq:4-management-alpine
     container_name: 'rabbitmq'
     ports:
       - 5673:5672
@@ -23,28 +23,29 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV}
       RABBITMQ_HOST: ${RABBITMQ_HOST}
-    volumes:
-      - ./services/auth-service:/home/node/app
+    # volumes:
+    #   - ./services/auth-service:/home/node/app
     depends_on:
       - rabbitmq
     networks:
       - app-network
 
-  # sync-service:
-  #   build:
-  #     context: ./services/sync-service
-  #     dockerfile: ./docker/Dockerfile.dev
-  #     args:
-  #       RABBITMQ_HOST: ${RABBITMQ_HOST}
-  #   volumes:
-  #     - ./services/sync-service:/app
-  #   environment:
-  #     NODE_ENV: ${NODE_ENV}
-  #     MESSAGE_QUEUE: amqp://rabbitmq
-  #   networks:
-  #     - app-network
-  #   links:
-  #     - app-rabbitmq
+  sync-service:
+    build:
+      context: ./services/sync-service
+      dockerfile: ./docker/Dockerfile.dev
+      args:
+        RABBITMQ_HOST: ${RABBITMQ_HOST}
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      MESSAGE_QUEUE: amqp://rabbitmq
+    # volumes:
+    #   - ./services/sync-service:/home/node/app
+    command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=30 -- npm run dev'
+    depends_on:
+      - rabbitmq
+    networks:
+      - app-network
 networks:
   app-network:
     driver: bridge
