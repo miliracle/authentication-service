@@ -1,7 +1,7 @@
 import amqplib from 'amqplib';
-const amqpUrl = process.env.RABBITMQ_HOST;
+const amqpUrl = `amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_SERVICE_NAME}:${process.env.RABBITMQ_PORT}`;
 
-async function processMessage(msg) {
+async function processMessage(msg: amqplib.ConsumeMessage) {
   console.log(msg.content.toString(), 'Call email API hereee');
 }
 
@@ -20,8 +20,8 @@ async function processMessage(msg) {
     await channel.assertQueue(queue, {durable: true});
     await channel.consume(queue, async (msg) => {
       console.log('processing messages');      
-      await processMessage(msg);
-      await channel.ack(msg);
+      await processMessage(msg as amqplib.ConsumeMessage);
+      await channel.ack(msg as amqplib.Message);
     }, 
     {
       noAck: false,

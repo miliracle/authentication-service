@@ -1,47 +1,45 @@
 version: '3.8'
 services:
   app-rabbitmq-message-queue:
-    image: rabbitmq:4-management-alpine  # Use RabbitMQ with management plugin on Alpine Linux
-    container_name: 'app-rabbitmq-message-queue'  # Name the container for easy reference
+    image: rabbitmq:4-management-alpine
+    container_name: 'app-rabbitmq-message-queue'
     ports:
-      - 5673:5672  # Map RabbitMQ default port to a different host port
-      - 15673:15672  # Map RabbitMQ management port to a different host port
+      - ${RABBITMQ_PORT}:5672
+      - ${RABBITMQ_MANAGEMENT_PORT}:15672
     volumes:
-      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/  # Persist RabbitMQ data
-      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq  # Persist RabbitMQ logs
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
-      - app-network  # Connect to the app-network for inter-service communication
+      - app-network
 
   app-node-js-auth-service:
     build:
-      context: ./services/auth-service  # Set build context to auth-service directory
-      dockerfile: ./docker/Dockerfile.dev  # Use the development Dockerfile
+      context: ./services/auth-service
+      dockerfile: ./docker/Dockerfile.dev
     ports:
-      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"  # Expose the auth-service on a configurable port
+      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
     env_file:
-      - .env  # Load environment variables from .env file
+      - .env
     volumes:
-      - ./services/auth-service:/home/node/app  # Mount the auth-service code for live updates
-      - /home/node/app/node_modules  # Avoid overwriting node_modules with host files
-    depends_on:
-      - app-rabbitmq-message-queue  # Ensure rabbitmq starts before auth-service
+      - ./services/auth-service:/home/node/app
+      - /home/node/app/node_modules
     networks:
-      - app-network  # Connect to the app-network for inter-service communication
+      - app-network
 
   app-node-js-sync-service:
     build:
-      context: ./services/sync-service  # Set build context to sync-service directory
-      dockerfile: ./docker/Dockerfile.dev  # Use the development Dockerfile
+      context: ./services/sync-service
+      dockerfile: ./docker/Dockerfile.dev
     env_file:
-      - .env  # Load environment variables from .env file
+      - .env
     volumes:
-      - ./services/sync-service:/home/node/app  # Mount the sync-service code for live updates
-      - /home/node/app/node_modules  # Avoid overwriting node_modules with host files
-    command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=30 -- npm run dev'  # Wait for RabbitMQ before starting
+      - ./services/sync-service:/home/node/app
+      - /home/node/app/node_modules
+    command: sh -c '/bin/wait-for-it.sh ${RABBITMQ_SERVICE_NAME}:${RABBITMQ_PORT} --timeout=30 -- npm run dev'
     depends_on:
-      - app-rabbitmq-message-queue  # Ensure rabbitmq starts before sync-service
+      - app-rabbitmq-message-queue
     networks:
-      - app-network  # Connect to the app-network for inter-service communication
+      - app-network
 networks:
   app-network:
-    driver: bridge  # Use bridge network driver for container communication
+    driver: bridge

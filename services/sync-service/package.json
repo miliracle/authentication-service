@@ -6,7 +6,7 @@
   "main": "dist/app.js",
   "scripts": {
     "start": "tsc && node dist/app.js",
-    "build": "tsc",
+    "build": "tsc -b",
     "dev": "nodemon"
   },
   "author": "",
@@ -15,10 +15,11 @@
     "amqplib": "^0.10.4"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.10.5",
+    "dotenv": "^16.4.5",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
-    "typescript": "^5.6.3",
-    "dotenv": "^16.4.5"
+    "typescript": "^5.6.3"
   }
 }

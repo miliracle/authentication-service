@@ -1,25 +1,45 @@
 version: '3.8'
 services:
-  rabbitmq:
-    image: rabbitmq:management
+  app-rabbitmq-message-queue:
+    image: rabbitmq:4-management-alpine
+    container_name: 'app-rabbitmq-message-queue'
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - ${RABBITMQ_PORT}:5672
+      - ${RABBITMQ_MANAGEMENT_PORT}:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - app-network
 
-  auth-service:
+  app-node-js-auth-service:
     build:
       context: ./services/auth-service
-      dockerfile: Dockerfile.prod
+      dockerfile: ./docker/Dockerfile.prod
     ports:
-      - "3000:3000"
-    environment:
-      NODE_ENV: production
-      RABBITMQ_HOST: rabbitmq
+      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
+    env_file:
+      - .env
+    volumes:
+      - ./services/auth-service:/home/node/app
+      - /home/node/app/node_modules
+    networks:
+      - app-network
 
-  subscriber-service:
+  app-node-js-sync-service:
     build:
-      context: ./services/subscriber-service
-      dockerfile: Dockerfile.prod
-    environment:
-      NODE_ENV: production
-      RABBITMQ_HOST: rabbitmq
+      context: ./services/sync-service
+      dockerfile: ./docker/Dockerfile.prod
+    env_file:
+      - .env
+    volumes:
+      - ./services/sync-service:/home/node/app
+      - /home/node/app/node_modules
+    command: sh -c '/bin/wait-for-it.sh ${RABBITMQ_SERVICE_NAME}:${RABBITMQ_PORT} --timeout=30 -- node dist/app.js'
+    depends_on:
+      - app-rabbitmq-message-queue
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
