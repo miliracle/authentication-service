@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "workspaces": [
+    "services/*"
+  ],
+  "devDependencies": {
+    "husky": "^9.1.6",
+    "lerna": "^8.1.9",
+    "prettier": "^3.3.3"
+  },
+  "scripts": {
+    "pre-commit": "lerna run pre-commit --scope \"@root-auth/*\"",
+    "prepare": "husky"
+  }
+}

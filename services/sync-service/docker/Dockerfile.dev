@@ -1,0 +1,21 @@
+FROM node:18-alpine
+
+RUN apk add --no-cache bash
+
+RUN wget -O /bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+
+RUN chmod +x /bin/wait-for-it.sh
+
+RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
+
+WORKDIR /home/node/app
+
+COPY --chown=node:node package*.json ./
+
+USER node
+
+RUN npm install
+
+COPY --chown=node:node . .
+
+CMD ["npm", "run", "dev"]

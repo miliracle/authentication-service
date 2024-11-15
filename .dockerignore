@@ -1,0 +1,26 @@
+   # Node modules
+   services/*/node_modules
+   services/*/node_modules/**/*
+   services/*/dist
+   services/*/dist/**/*
+
+   node_modules
+
+   # Logs
+   *.log
+
+   # Temporary files
+   tmp
+   *.tmp
+
+   # Git
+   .git
+   .gitignore
+
+   # Docker files
+   Dockerfile*
+   docker-compose*.yml
+
+   # IDE files
+   .vscode
+   .idea

@@ -1,0 +1,28 @@
+# Stage 1: Build
+FROM node:18-alpine as builder
+
+RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
+
+WORKDIR /home/node/app
+
+COPY --chown=node:node package*.json ./
+
+USER node
+
+RUN npm install --only=production
+
+COPY --chown=node:node . .
+
+RUN npm run build
+
+# Stage 2: Run
+FROM node:18-alpine as runner
+
+RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
+
+WORKDIR /home/node/app
+
+COPY --from=builder /home/node/app/dist ./dist
+COPY --from=builder /home/node/app/node_modules ./node_modules
+
+CMD ["node", "dist/app.js"]
