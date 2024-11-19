@@ -40,6 +40,14 @@ services:
       - app-rabbitmq-message-queue
     networks:
       - app-network
+
+  app-node-js-frontend-service:
+    build:
+      context: ./services/frontend-service
+      dockerfile: ./docker/Dockerfile.dev
+    ports:
+      - "3000:3000"
+
 networks:
   app-network:
     driver: bridge

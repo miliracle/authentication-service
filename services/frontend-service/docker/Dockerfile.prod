@@ -14,20 +14,14 @@ RUN npm run build
 # Stage 2: Run
 FROM node:18-alpine as runner
 
-RUN apk add --no-cache bash
-
-RUN wget -O /bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-
-RUN chmod +x /bin/wait-for-it.sh
-
-RUN mkdir -p /home/node/app
+RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
 
 WORKDIR /home/node/app
 
-COPY --from=builder /home/node/app/dist ./dist
-
+COPY --from=builder /home/node/app/.nuxt ./.nuxt
+COPY --from=builder /home/node/app/.output ./.output
 COPY --from=builder /home/node/app/package.json ./package.json
 
 RUN npm install --only=production
 
-CMD ["node", "dist/app.js"]
+CMD ["node", ".output/server/index.mjs"]
