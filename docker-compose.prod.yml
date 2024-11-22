@@ -17,7 +17,7 @@ services:
       context: ./services/auth-service
       dockerfile: ./docker/Dockerfile.prod
     ports:
-      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
+      - '${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}'
     env_file:
       - .env
     volumes:
@@ -46,7 +46,7 @@ services:
       context: ./services/frontend-service
       dockerfile: ./docker/Dockerfile.prod
     ports:
-      - "3000:3000"
+      - '3000:3000'
 networks:
   app-network:
     driver: bridge

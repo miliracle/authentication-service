@@ -1,16 +1,30 @@
 {
   "private": true,
-  "workspaces": [
-    "services/*"
-  ],
+  "name": "authentication-service",
+  "version": "0.0.1",
+  "author": "Miliracle <nguyennhathan126@gmail.com> (https://github.com/miliracle)",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0",
+    "npm": "please-use-pnpm",
+    "yarn": "please-use-pnpm"
+  },
   "devDependencies": {
     "husky": "^9.1.6",
     "lerna": "^8.1.9",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "rimraf": "^6.0.1"
   },
   "scripts": {
-    "pre-commit": "lerna run pre-commit --scope \"@root-auth/*\"",
-    "prepare": "husky"
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+    "preinstall": "npx only-allow pnpm",
+    "pre-commit": "pnpm run --filter \"@root-auth/*\" pre-commit",
+    "prepare": "husky",
+    "clean": "rimraf \"**/node_modules\" && pnpm -r clean",
+    "fresh": "pnpm clean && pnpm i",
+    "nuke": "rimraf pnpm-lock.yaml && pnpm fresh",
+    "format": "prettier",
+    "format:check": "pnpm format --check --debug-check .",
+    "format:fix": "pnpm format --write ."
+  }
 }

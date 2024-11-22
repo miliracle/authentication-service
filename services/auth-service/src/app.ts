@@ -3,8 +3,6 @@ import amqplib from 'amqplib';
 
 // Define the AMQP URL for connecting to RabbitMQ
 const amqpUrl = `amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_SERVICE_NAME}:${process.env.RABBITMQ_PORT}`;
-;
-
 // Create an Express application
 const app = express();
 // Set the port for the application, defaulting to 4001 if not specified in environment variables
@@ -37,9 +35,17 @@ app.get('/api/v1/ping', async (req, res) => {
       await channel.bindQueue(queue, exchange, routingKey);
 
       // Create a message with a random ID and a sample email
-      const msg = { 'id': Math.floor(Math.random() * 1000), 'email': 'user@domail.com', name: 'firstname lastname' };
+      const msg = {
+        id: Math.floor(Math.random() * 1000),
+        email: 'user@domail.com',
+        name: 'firstname lastname',
+      };
       // Publish the message to the exchange with the specified routing key
-      await channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(msg)));
+      await channel.publish(
+        exchange,
+        routingKey,
+        Buffer.from(JSON.stringify(msg))
+      );
       console.log('Message published');
     } catch (e) {
       console.error('Error in publishing message', e);
@@ -51,8 +57,7 @@ app.get('/api/v1/ping', async (req, res) => {
       console.info('Channel and connection closed');
     }
     // Send a success response
-    res.status(200).send(" [x] Sent %s");
-
+    res.status(200).send(' [x] Sent %s');
   } catch (error) {
     // Send an error response if something goes wrong
     res.status(500).send(error);

@@ -1,0 +1,9 @@
+node_modules/
+pnpm-lock.yaml
+services/*/node_modules/
+services/*/.output/
+services/*/.nuxt/
+services/*/.env
+services/*/dist
+packages/*/node_modules/
+packages/*/dist
