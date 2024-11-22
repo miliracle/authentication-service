@@ -14,8 +14,7 @@
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "*.{js,ts}": "eslint . --fix",
-    "*.{js,ts,json,vue}": "prettier --write ."
+    "*.{js,ts}": "eslint . --fix"
   },
   "dependencies": {
     "@nuxt/eslint": "^0.7.1",

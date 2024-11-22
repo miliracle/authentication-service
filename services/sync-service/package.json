@@ -11,8 +11,7 @@
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "*.{js,ts}": "eslint --fix .",
-    "*.{js,ts,json}": "prettier --write ."
+    "*.{js,ts}": "eslint --fix ."
   },
   "author": "",
   "license": "ISC",

@@ -17,7 +17,7 @@
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "pre-commit": "pnpm run --filter \"@root-auth/*\" pre-commit",
+    "pre-commit": "pnpm run --filter \"@root-auth/*\" pre-commit && prettier --write .",
     "prepare": "husky",
     "clean": "rimraf \"**/node_modules\" && pnpm -r clean",
     "fresh": "pnpm clean && pnpm i",
