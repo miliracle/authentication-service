@@ -10,7 +10,8 @@
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "*.{js,ts}": "eslint --fix ."
+    "*.{js,ts}": "eslint --fix .",
+    "*.{js,ts,json}": "prettier --write ."
   },
   "keywords": [],
   "author": "",
